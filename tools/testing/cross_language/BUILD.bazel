@@ -1,0 +1,31 @@
+package(default_visibility = ["//:__subpackages__"])
+
+licenses(["notice"])
+
+filegroup(
+    name = "test_lib",
+    srcs = [
+        "test_util.sh",
+    ],
+)
+
+sh_test(
+    name = "aead_envelope_test",
+    size = "medium",
+    srcs = [
+        "aead_envelope_test.sh",
+    ],
+    data = [
+        ":test_lib",
+        "//testdata/aws:credentials",
+        "//testdata/gcp:credentials",
+        "//testing:aead_cli_java",
+        "//testing/cc:aead_cli_cc",
+        "//testing/go:aead_cli_go",
+        "//testing/go:generate_envelope_keyset",
+        "//testing/python:aead_cli_python",
+        "//tinkey",
+        "@google_root_pem//file",
+    ],
+    tags = ["manual"],
+)

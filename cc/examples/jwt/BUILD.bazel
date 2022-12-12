@@ -1,0 +1,42 @@
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+filegroup(
+    name = "jwt_signature_keysets",
+    srcs = [
+        "jwt_signature_private_keyset.json",
+        "jwt_signature_public_keyset.json",
+    ],
+)
+
+cc_binary(
+    name = "jwt_signature_cli",
+    srcs = ["jwt_signature_cli.cc"],
+    deps = [
+        "//util:util",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@tink_cc//:keyset_handle",
+        "@tink_cc//jwt:jwt_public_key_sign",
+        "@tink_cc//jwt:jwt_public_key_verify",
+        "@tink_cc//jwt:jwt_signature_config",
+        "@tink_cc//jwt:jwt_validator",
+        "@tink_cc//jwt:raw_jwt",
+        "@tink_cc//util:status",
+    ],
+)
+
+sh_test(
+    name = "jwt_signature_cli_test",
+    size = "small",
+    srcs = ["jwt_signature_cli_test.sh"],
+    args = [
+        "$(rootpath :jwt_signature_cli)",
+        "$(rootpaths :jwt_signature_keysets)",
+    ],
+    data = [
+        ":jwt_signature_cli",
+        ":jwt_signature_keysets",
+    ],
+)
